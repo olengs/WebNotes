@@ -1,0 +1,66 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = "JC's Notes"
+theme = 'papermod'
+
+##########################configuration##############################
+[[menus.main]]
+name = "Home"
+pageRef = '/'
+weight = 10
+
+[[menus.main]]
+name = "Tags"
+pageRef = '/tags'
+weight = 20
+
+[[menus.main]]
+name = "Search"
+pageRef = '/search'
+weight = 20
+
+[[menus.main]]
+name = "Archive"
+pageRef = '/archives'
+weight = 20
+
+[taxonomies]
+category = "categories"
+tag = "tags"
+series = "series"
+
+[params]
+author = "Lim Jun Chen"
+defaultTheme = "auto"
+
+[params.profileMode]
+enabled = true
+Title = "Hello World!"
+Content = "Just your average software developer"
+imageUrl = "images/avatar.jpeg"
+imageTitle = "hello"
+#imageWidth = 120
+#imageHeight = 120
+
+[[params.profileMode.buttons]]
+name = "Archive"
+url = "/archives"
+
+[[params.profileMode.buttons]]
+name = "tags"
+url = "/tags"
+
+[[params.socialIcons]]
+name = "github"
+url = "https://www.github.com/olengs"
+
+[[params.socialIcons]]
+name="linkedin"
+url = "https://www.linkedin.com/in/lim-jun-chen-2bb508213"
+
+
+
+
+#########################Seach Config##############################
+[outputs]
+home = [ "HTML", "RSS", "JSON" ]

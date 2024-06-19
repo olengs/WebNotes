@@ -1,0 +1,5 @@
+.DS_Store
+.hugo_build.lock
+/data
+/i18n
+/public
