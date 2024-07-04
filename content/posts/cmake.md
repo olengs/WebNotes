@@ -3,10 +3,10 @@ title: "CMake"
 summary: "Learnings from using cmake"
 date: 2024-06-19
 tags: ["c++", "third-party", "cmake", "compile"]
-layout: "categories"
 author: ["JC"]
 draft: false
 weight: 0
+ShowToc: true
 ---
 
 
@@ -20,7 +20,7 @@ To install cmake, go to their [link](https://cmake.org/download/) and download t
 
 To use cmake, create a CMakelists.txt into your project folder.
 
-![](images/directory.jpg)
+![](../images/directory.jpg)
 
 <!-- >Add image of directory for cmakelist.txt here</!-->
 
@@ -43,10 +43,10 @@ cmake --build . --config Release
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
-![](images/msvc_cmake_install.jpg)
+![](../images/msvc_cmake_install.jpg)
 
 The tool allows you to adjust configuration and build without caching via the UI.
-![](images/msvc_cmake_config.jpg) 
+![](../images/msvc_cmake_config.jpg)
 
 
 ### Cmakelists.txt Code
