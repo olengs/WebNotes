@@ -2,11 +2,11 @@
 title: "CMake"
 summary: "Learnings from using cmake"
 date: 2024-06-19
-tags: ["c++", "third-party"]
+tags: ["c++", "third-party", "cmake", "compile"]
 layout: "categories"
 author: ["JC"]
-draft: true
-weight: 5
+draft: false
+weight: 0
 ---
 
 
@@ -25,6 +25,29 @@ To use cmake, create a CMakelists.txt into your project folder.
 <!-- >Add image of directory for cmakelist.txt here</!-->
 
 ---
+
+### Building the project
+
+Cmake is a command line tool. The following commands are used to build the project.
+
+```cmake
+#to cache build
+cmake .
+
+#to build current folder (after baking)
+#debug mode
+cmake --build . --config Debug
+
+#release mode
+cmake --build . --config Release
+```
+
+There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
+![](images/msvc_cmake_install.jpg)
+
+The tool allows you to adjust configuration and build without caching via the UI.
+![](images/msvc_cmake_config.jpg) 
+
 
 ### Cmakelists.txt Code
 
@@ -75,26 +98,30 @@ add_executable(BaseServer "BaseServer/main.cpp")
 ---
 
 ### Adding a library
-To add a library, you first have to create a cmake object for the library.
+There are 2 ways of adding a library. First way is to directly link the library to the target
 
-```cmake {lineos=true}
+```cmake {linenos=true}
 cmake_minimum_required(VERSION "3.19.0")
-
-
-set(myLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/myLib.lib)
 
 project(BaseServer)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/BaseServer)
 add_executable(BaseServer "BaseServer/main.cpp")
+
+#linking custom .lib library
+target_link_libraries(BaseServer ${CMAKE_CURRENT_SOURCE_DIR}/lib/BlankNetLib.lib)
 ```
 
-and then link the library to your project after adding the executable
-```cmake {lineos=true}
+The other way is to set the library as a cmake object. The cmake object can be either created via CXX scripts or an imported .lib file.
+The following shows adding an imported library file.
+
+```cmake {linenos=true}
 cmake_minimum_required(VERSION "3.19.0")
 
-
-set(BlankNetLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/BlankNet.lib)
+#adding imported lib
+add_library(BlankNetLib STATIC IMPORTED)
+set_property(TARGET BlankNetLib PROPERTY
+             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/lib/BlankNetLib.lib)
 
 project(BaseServer)
 set(CMAKE_CXX_STANDARD 20)
@@ -103,6 +130,7 @@ add_executable(BaseServer "BaseServer/main.cpp")
 target_link_libraries(BaseServer BlankNetLib)
 ```
 
+The following shows adding a self created library.
 
 ```cmake {linenos=true}
 cmake_minimum_required(VERSION "3.19.0")
@@ -113,6 +141,41 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:RELEASE>:RELEASE>")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
+#creating new lib
+project(BlankNetLib)
+set(CMAKE_CXX_STANDARD 17)
+add_library(BlankNetLib STATIC 
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/Client.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/Client.h
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/Server.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/Server.h
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/ThreadPool.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/ThreadPool.h
+${CMAKE_CURRENT_SOURCE_DIR}/BlankNetLib/Common.h
+${CMAKE_CURRENT_SOURCE_DIR}/JCCommon/Task.hpp
+${CMAKE_CURRENT_SOURCE_DIR}/JCCommon/TaskPool.hpp
+)
+
+project(BaseServer)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/BaseServer)
+add_executable(BaseServer "BaseServer/main.cpp")
+
+target_link_libraries(BaseServer BlankNetLib)
+```
+
+### Adding subdirectories
+
+Remember the other cmakelists.txt you saw in my directory folder?
+You can create subdirectories with cmake
+
+subdirectories is basically a #include which copies all the subdirectory to the compiled cmakelists.txt
+
+Ensure that the input of the subdirectory is the folder name of the subdirectory 1 folder layer in.
+
+```cmake {linenos=true}
+cmake_minimum_required(VERSION "3.19.0")
+
 add_subdirectory(BlankNetLib)
 
 project(BaseServer)
@@ -120,30 +183,47 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/BaseServer)
 add_executable(BaseServer "BaseServer/main.cpp")
 target_link_libraries(BaseServer BlankNetLib)
-
-project(BaseClient)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/BaseClient)
-add_executable(BaseClient "BaseClient/main.cpp")
-target_link_libraries(BaseClient BlankNetLib)
-
-project(Networking)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/Networking)
-add_executable(Networking 
-"main.cpp" 
-"Testing/Task.hpp"
-)
-set_target_properties(Networking PROPERTIES CXX_STANDARD 17
-                                       CXX_STANDARD_REQUIRED ON
-                                       CXX_EXTENSIONS ON)
-target_link_libraries(Networking BlankNetLib)
 ```
 
----
 
-![regular](images/imgtest.jpg)
+### Additional options (MSVC)
+
+Some additioal options that can be added:
+
+
+1. multithreaded flag for static or dynamic builds
+``` cmake{linenos=true}
+#compiles with multithreading flag for debug mode statically-linked runtime library.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug$<$<CONFIG:DEBUG>:DEBUG>")
+
+#compiles with multithreading flag for debug mode statically-linked runtime library.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:RELEASE>:RELEASE>")
+
+#compiles with multithreading flag for debug mode dynamically-linked runtime library.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL$<$<CONFIG:DEBUG>:DEBUG>")
+
+#compiles with multithreading flag for debug mode dynamically-linked runtime library.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:RELEASE>:RELEASE>")
+```
+
+
+### Additional options (Project)
+
+Some additional options for the project that can be added
+
+
+1. setting output directory for library output and exe output
+``` cmake{linenos=true}
+#where to put your static libraries
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <dir>)
+
+#where to put your shared libraries
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <dir>)
+
+#where to put your executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <dir>)
+```
+
 
 ---
 
