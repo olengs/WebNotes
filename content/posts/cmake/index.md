@@ -20,6 +20,8 @@ To install cmake, go to their [link](https://cmake.org/download/) and download t
 
 To use cmake, create a CMakelists.txt into your project folder.
 
+![](images/directory.jpg)
+
 <!-- >Add image of directory for cmakelist.txt here</!-->
 
 ---
