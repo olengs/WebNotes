@@ -34,6 +34,10 @@ author = "Lim Jun Chen"
 defaultTheme = "auto"
 ShowCodeCopyButtons = true
 ShowPostNavLinks = true
+ShowReadingTime = true
+ShowShareButtons = false
+ShowBreadCrumbs = true
+ShowWordCount = true
 
 [params.profileMode]
 enabled = true

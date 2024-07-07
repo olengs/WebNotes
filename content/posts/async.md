@@ -1,10 +1,10 @@
 ---
-title: "std::future and asynchronous programming"
+title: "Asynchronous programming using std::future"
 summary: "Notes for c++ async"
 date: 2024-07-03
 tags: ["c++", "async", "multithreading"]
 author: ["JC"]
-draft: true
+draft: false
 weight: 0
 ShowToc: true
 ---
@@ -70,13 +70,66 @@ This is where std::future comes in.
 ### std::future[(link)](https://en.cppreference.com/w/cpp/thread/future)
 
 std::future is the result, the value returned from an asynchronous process.
+
 it is commonly used with
 1. [std::packaged_task](../async#std::packaged_task)
 2. [std::promise](../async#std::promise)
 3. [std::async](../async#std::async)
 
-Packaged task and promise are super similar with async being only slightly different.
-Let's go through these features.
+Note that the std::future has to be saved as the invoke will get destroyed when the std::future is destroyed. This can be fixed with std::shared_future.
+
+How it is used:
+
+```c++{linenos=true}
+
+//create the future
+std::future<T> future = std::async(&func, args...);
+//wait for the results to finish
+future.wait()
+//get the results (will also wait for results to finish, you do not have to call wait() before this)
+std::cout << "result=" << future.get() << '\n';
+
+//wait for a certain duration
+std::future<T> future_waitfor = std::async(&func, args...);
+if(std::future_status::ready == future_waitfor.wait_for(std::chrono::microseconds(0)))
+    std::cout << "future process is completed: " << future_waituntil.get() << "\n";
+else
+    std::cout << "future process did not complete!\n";
+
+//wait until a certain time
+std::future<T> future_waituntil = std::async(&func, args...);
+std::chrono::system_clock::time_point two_seconds_passed
+        = std::chrono::system_clock::now() + std::chrono::seconds(2);
+if(std::future_status::ready == future_waituntil.wait_until(two_seconds_passed))
+    std::cout << "future process has completed: " << future_waituntil.get() << "\n";
+else
+    std::cout << "future process did not complete!\n";
+
+//checks if future is still valid
+std::future<T> future_valid = std::async(&func, args...);
+future_valid.valid(); //returns true
+future_valid.get();
+future_valid.valid(); //returns false
+
+//shares the future as a shared future
+std::future future_share = std::async(&func, args...)
+std::shared_future shared_future;
+shared_future = future_share.share();
+future_share.valid(); //returns false
+
+```
+
+future.wait_for() and future.wait_until() is a great way to check whether the process has ended.
+
+---
+
+### std::shared_future [(link)](https://en.cppreference.com/w/cpp/thread/shared_future)
+
+shared_future works the same way as a future.
+The differences are:
+1. a shared future will only be destroyed when all instances of the shared state has been destroyed
+2. shared_future.get() will not invalid the future
+3. A shared_future may be used to signal multiple threads simultaneously, similar to [std::condition_variable::notify_all()](https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all).
 
 ---
 
@@ -85,6 +138,10 @@ Let's go through these features.
 Starting with packaged task, package task solves the problem where threads are unable to return values after completion.
 
 ```c++ {linenos=true}
+#include <iostream>
+#include <thread>
+#include <future>
+
 void task_thread()
 {
     //create package task by passing function and arguments
@@ -106,8 +163,12 @@ void task_thread()
 ### std::promise [(link)](https://en.cppreference.com/w/cpp/thread/promise)
 
 Next, we have std::promise, std::promise is more like a communication channel between different threads.
-Note that you will have to pass in the std::promise into the running function as you have to set the value into the promise.
-Also note that std::promise is not copy-constructible and you have to use [std::move](https://en.cppreference.com/w/cpp/utility/move) to pass the promise into the function.
+
+Pointers to note:
+1. You will have to pass in the std::promise into the running function as you have to set the value into the promise.
+2. std::promise is not copy-constructible and you have to use [std::move](https://en.cppreference.com/w/cpp/utility/move) to pass the promise into the function.
+3. If you look at the example below, std::future .get() function will block until you get a promise where if you dont, if will forever be waiting on the promise (ill-formed program)
+4. It is possible to detach the thread and just use future.get() to wait for the result
 
 ```c++{linenos=true}
 
@@ -136,10 +197,6 @@ int main()
 }
 ```
 
-A few more pointers to consider when using std::promise
-1. Like the previous few examples have shown, std::future .get() function will block until you get a promise where if you dont, if will forever be waiting on the promise (ill-formed program)
-2. It is possible to detach the thread and just use future.get() to wait for the result
-
 ---
 
 ### std::async [(link)](https://en.cppreference.com/w/cpp/thread/async)
@@ -151,12 +208,31 @@ For default calls of std::async, policy is treated as std::launch::async | std::
 2. std::launch::deferred - runs the function WHEN the future.get() or future.wait() is called and on the thread that the future.get() or future.wait() is called.
 3. std::launch::async | std::launch::deferred - will run async if system allows and if system ran out of resources for async to create threads, will run deferred instead.
 
-```c++{linenos=true}
+Pointers to note:
+1. The returned std::future from the std::async has to be saved as the invoke will get destroyed when the std::future is destroyed. This can be fixed with std::shared_future.
+2. the async function has a [[no_discard]] with means the return of the async function cannot be discarded. Hence, save the future somewhere. This is implemented as if the future is discarded, the async process will be destroyed right after it has been created.
 
+```c++{linenos=true}
+#include <future>
+#include <thread>
+#include <iostream>
+
+int sum(int a, int b) {
+    //do something
+    return a+b;
+}
+//run async with default policy std::launch::async | std::launch::deferred
+auto future = std::async(&sum, 5, 2);
+//run async with async policy
+//auto future = std::async(std::launch::async, &sum, 5, 2);
+
+//run async with deferred policy
+//auto future = std::async(std::launch::async, &sum, 5, 2);
+
+//wait and get result of async process
+std::cout << "result=" << future.get() << '\n';
 
 ```
 
+---
 
-Pointers to note:
-1. the returned std::future from the std::async has to be saved as the invoke will get destroyed when the std::future is destroyed.
-2. 
