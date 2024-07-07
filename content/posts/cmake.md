@@ -20,7 +20,7 @@ To install cmake, go to their [link](https://cmake.org/download/) and download t
 
 To use cmake, create a CMakelists.txt into your project folder.
 
-![](../images/directory.jpg)
+![](../images/cmake/directory.jpg)
 
 <!-- >Add image of directory for cmakelist.txt here</!-->
 
@@ -43,10 +43,10 @@ cmake --build . --config Release
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
-![](../images/msvc_cmake_install.jpg)
+![](../images/cmake/msvc_cmake_install.jpg)
 
 The tool allows you to adjust configuration and build without caching via the UI.
-![](../images/msvc_cmake_config.jpg)
+![](../images/cmake/msvc_cmake_config.jpg)
 
 
 ### Cmakelists.txt Code
@@ -223,7 +223,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <dir>)
 #where to put your executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <dir>)
 ```
-
 
 ---
 

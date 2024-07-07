@@ -32,6 +32,12 @@ series = "series"
 [params]
 author = "Lim Jun Chen"
 defaultTheme = "auto"
+ShowCodeCopyButtons = true
+ShowPostNavLinks = true
+ShowReadingTime = true
+ShowShareButtons = false
+ShowBreadCrumbs = true
+ShowWordCount = true
 
 [params.profileMode]
 enabled = true
@@ -57,6 +63,7 @@ url = "https://www.github.com/olengs"
 [[params.socialIcons]]
 name="linkedin"
 url = "https://www.linkedin.com/in/lim-jun-chen-2bb508213"
+
 
 
 
