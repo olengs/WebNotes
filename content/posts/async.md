@@ -82,4 +82,81 @@ Let's go through these features.
 
 ### std::packaged_task [(link)](https://en.cppreference.com/w/cpp/thread/packaged_task)
 
-Firstly, packaged task solves the problem where threads are unable to 
+Starting with packaged task, package task solves the problem where threads are unable to return values after completion.
+
+```c++ {linenos=true}
+void task_thread()
+{
+    //create package task by passing function and arguments
+    std::packaged_task<int(int, int)> task(f);
+    //keep the result using std::future
+    std::future<int> result = task.get_future();
+    //run the function asynchronously via threads.
+    std::thread task_td(std::move(task), 2, 10);
+    //wait for function to finish
+    task_td.join();
+    //get result from task
+    std::cout << "task_thread:\t" << result.get() << '\n';
+}
+```
+
+---
+
+
+### std::promise [(link)](https://en.cppreference.com/w/cpp/thread/promise)
+
+Next, we have std::promise, std::promise is more like a communication channel between different threads.
+Note that you will have to pass in the std::promise into the running function as you have to set the value into the promise.
+Also note that std::promise is not copy-constructible and you have to use [std::move](https://en.cppreference.com/w/cpp/utility/move) to pass the promise into the function.
+
+```c++{linenos=true}
+
+void accumulate(std::vector<int>::iterator first,
+                std::vector<int>::iterator last,
+                std::promise<int> accumulate_promise)
+{
+    int sum = std::accumulate(first, last, 0);
+    accumulate_promise.set_value(sum); // Notify future
+}
+
+int main()
+{
+    // Demonstrate using promise<int> to transmit a result between threads.
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6};
+    std::promise<int> accumulate_promise;
+    std::future<int> accumulate_future = accumulate_promise.get_future();
+    std::thread work_thread(accumulate, numbers.begin(), numbers.end(),
+                            std::move(accumulate_promise));
+ 
+    // future::get() will wait until the future has a valid result and retrieves it.
+    // Calling wait() before get() is not needed
+    // accumulate_future.wait(); // wait for result
+    std::cout << "result=" << accumulate_future.get() << '\n';
+    work_thread.join(); // wait for thread completion
+}
+```
+
+A few more pointers to consider when using std::promise
+1. Like the previous few examples have shown, std::future .get() function will block until you get a promise where if you dont, if will forever be waiting on the promise (ill-formed program)
+2. It is possible to detach the thread and just use future.get() to wait for the result
+
+---
+
+### std::async [(link)](https://en.cppreference.com/w/cpp/thread/async)
+Lastly, we have std::async which can wraps up both packaged_task and promise to make it easier to use.
+
+There are 2 launch policies for std::async, std::launch::async and std::launch::deferred.
+For default calls of std::async, policy is treated as std::launch::async | std::launch::deferred.
+1. std::launch::async - runs the function on a thread immediately and holds the result until a future.get() is called.
+2. std::launch::deferred - runs the function WHEN the future.get() or future.wait() is called and on the thread that the future.get() or future.wait() is called.
+3. std::launch::async | std::launch::deferred - will run async if system allows and if system ran out of resources for async to create threads, will run deferred instead.
+
+```c++{linenos=true}
+
+
+```
+
+
+Pointers to note:
+1. the returned std::future from the std::async has to be saved as the invoke will get destroyed when the std::future is destroyed.
+2. 
