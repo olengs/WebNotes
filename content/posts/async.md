@@ -13,9 +13,9 @@ ShowToc: true
 This post will talk about std::async, std::future, std::packaged_task, std::thread and asyncronous programming as a whole
 
 In c++, There is currently 3 ways, as of writing, to create non-blocking functions.
-1. std::promise (asynchronous)
-2. std::async (asynchronous)
-3. std::thread (multi-threaded)
+1. [std::promise](../async#stdpromise) (asynchronous)
+2. [std::async](../async#stdasync) (asynchronous)
+3. [std::thread](../async/#stdthread) (multi-threaded)
 
 So, when do we use these? It's dependent on your use-case.
 
@@ -23,9 +23,9 @@ Let's start with std::thread.
 
 --- 
 
-### std::thread[(link)](https://en.cppreference.com/w/cpp/thread/thread)
+### std::thread 
 
-std::thread is the simplest of them all to use. But the conditions are also very limited.
+[std::thread](https://en.cppreference.com/w/cpp/thread/thread) is the simplest of them all to use. But the conditions are also very limited.
 You pass a function and its arguments into a thread constructor and it will start running.
 
 ```c++{linenos=true}
@@ -67,14 +67,14 @@ This is where std::future comes in.
 
 ---
 
-### std::future[(link)](https://en.cppreference.com/w/cpp/thread/future)
+### std::future
 
-std::future is the result, the value returned from an asynchronous process.
+[std::future](https://en.cppreference.com/w/cpp/thread/future) is the result, the value returned from an asynchronous process.
 
 it is commonly used with
-1. [std::packaged_task](../async#std::packaged_task)
-2. [std::promise](../async#std::promise)
-3. [std::async](../async#std::async)
+1. [std::packaged_task](../async#stdpackaged_task)
+2. [std::promise](../async#stdpromise)
+3. [std::async](../async#stdasync)
 
 Note that the std::future has to be saved as the invoke will get destroyed when the std::future is destroyed. This can be fixed with std::shared_future.
 
@@ -123,9 +123,9 @@ future.wait_for() and future.wait_until() is a great way to check whether the pr
 
 ---
 
-### std::shared_future [(link)](https://en.cppreference.com/w/cpp/thread/shared_future)
+### std::shared_future
 
-shared_future works the same way as a future.
+[std::shared_future](https://en.cppreference.com/w/cpp/thread/shared_future) works the same way as a future.
 The differences are:
 1. a shared future will only be destroyed when all instances of the shared state has been destroyed
 2. shared_future.get() will not invalid the future
@@ -133,9 +133,9 @@ The differences are:
 
 ---
 
-### std::packaged_task [(link)](https://en.cppreference.com/w/cpp/thread/packaged_task)
+### std::packaged_task 
 
-Starting with packaged task, package task solves the problem where threads are unable to return values after completion.
+Starting with [std::packaged_task](https://en.cppreference.com/w/cpp/thread/packaged_task), package task solves the problem where threads are unable to return values after completion.
 
 ```c++ {linenos=true}
 #include <iostream>
@@ -160,9 +160,9 @@ void task_thread()
 ---
 
 
-### std::promise [(link)](https://en.cppreference.com/w/cpp/thread/promise)
+### std::promise 
 
-Next, we have std::promise, std::promise is more like a communication channel between different threads.
+Next, we have [std::promise](https://en.cppreference.com/w/cpp/thread/promise), std::promise is more like a communication channel between different threads.
 
 Pointers to note:
 1. You will have to pass in the std::promise into the running function as you have to set the value into the promise.
@@ -199,8 +199,8 @@ int main()
 
 ---
 
-### std::async [(link)](https://en.cppreference.com/w/cpp/thread/async)
-Lastly, we have std::async which can wraps up both packaged_task and promise to make it easier to use.
+### std::async 
+Lastly, we have [std::async](https://en.cppreference.com/w/cpp/thread/async) which can wraps up both packaged_task and promise to make it easier to use.
 
 There are 2 launch policies for std::async, std::launch::async and std::launch::deferred.
 For default calls of std::async, policy is treated as std::launch::async | std::launch::deferred.

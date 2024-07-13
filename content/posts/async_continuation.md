@@ -21,7 +21,7 @@ In this post, I will be talking about the process of me making a continuation fu
 Firstly, I require the ability to run a task asynchronously using async. I created a task class that holds a std::shared_future (result).
 I also added a typedef to allow access to the type of the task.
 
-``` {linenos = true}
+```c++{linenos = true}
 template <typename T>
 class Task {
 public:
@@ -33,7 +33,7 @@ private:
 ``` 
 
 ### 2. Adding an init call to run function, using perfect forwarding of arguments.
-``` {linenos = true}
+```c++{linenos = true}
 	template<typename Func, typename ...Args>
 	inline void Init(Func&& func, Args&& ...args) {
 		results = std::async(std::launch::async, func, std::forward<Args>(args)...);
@@ -46,7 +46,7 @@ private:
 
 My idea of creating this continuation function is to move the blocking call onto another thread. Hence, I called a std::thread to move my function onto a new thread and used async.get() to block the call until it is done, afterwards calling the new function to start.
 
-``` {linenos = true}
+```c++{linenos = true}
 	template <typename Func, typename ...Args>
 	inline Task<_INVOKE_RESULTS_FTA>* then(Func&& func, Args&& ...args) 
 	{
@@ -85,7 +85,7 @@ The invoke results returns the return type of the function. This is to get the c
 
 Note: _INVOKE_RESULTS_FTA is a macro I made based on different invoke results conditions, please contact me details.
 
-``` {linenos = true}
+```c++{linenos = true}
 inline Task<_INVOKE_RESULTS_FTA>* then(Func&& func, Args&& ...args) 
 ```
 
@@ -95,7 +95,7 @@ Next, I created the new task that should be continued using the return type of t
 Then, I used a lambda function that waits for the previous task to end, then initialising the next continued function. During this, I used std::future_status to check whether the previous task has ended, else I will wait for the task for x seconds.
 Lastly, I called the lambda function to a new thread to move the "blocking" to the other thread.
 
-``` {linenos = true}
+```c++{linenos = true}
 using _Ret = _INVOKE_RESULTS_FT;
 Task<_Ret>* ret = new Task<_Ret>();
 		std::thread cont = std::thread(
