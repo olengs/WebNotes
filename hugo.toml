@@ -64,6 +64,10 @@ url = "https://www.github.com/olengs"
 name="linkedin"
 url = "https://www.linkedin.com/in/lim-jun-chen-2bb508213"
 
+[[params.socialIcons]]
+name = "discord"
+url = "https://discord.com/channels/@me/272596660771618817"
+
 
 
 
