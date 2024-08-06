@@ -45,9 +45,15 @@ cmake --build . --config Release
 1. mkdir build
 2. cd build
 3. cmake ../
+#build the project
 4. cmake build . --config Release
-5. cd ../
-6. rmdir build
+#build the project if --config doesn't work
+4. cmake build . -D CMAKE_BUILD_TYPE=Debug
+#compiles the project
+5. make
+#removing the build folder after completion
+6. cd ../
+7. rmdir build
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
