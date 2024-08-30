@@ -18,6 +18,15 @@ For windows you will require the winsock from windows (ws2_32.lib)
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
+
+//you are also required to initialise and de-initialise WSA
+//startup example
+if (WSAStartup(MAKEWORD(2, 2), &WsaData) != 0) {
+    printf("WSAStartup() error!\n");
+    return;
+}
+//destroy example
+WSACleanup();
 ```
 
 For unix/linux you will require the standard C socket libraries
@@ -52,6 +61,12 @@ On success, the socket or file descriptor is returned, on error, -1 is returned.
 //EXAMPLE
 m_Sock = socket(AF_INET, SOCK_STREAM, 0);
 m_Sock = socket(AF_INET6, SOCK_DGRAM, 0);
+
+//to close the socket in windows you call closesocket()
+closesocket(m_Sock);
+
+//in linux/unix/OSX you call close()
+close(m_Sock);
 ```
 
 2. sockaddr & sockaddr_in (linux/unix) / SOCKADDR & SOCKADDR_IN (WIN)
@@ -111,9 +126,14 @@ int ret = recv(m_Sock, buf, MAX_BUF_SIZE, 0);
 //note that ret in these cases are the success/failure returns which tells us if there are errors with the function
 ```
 
-5. IO multiplexing
+5. I/O multiplexing
 we will be talking about select(), epoll(), fd_set and how to use them
+
+i. we will first look at select(), select() is used differently in windows and non-windows
 ```c++ {linenos=true}
 
 
+
+
+//TODO: ADD DESCRIPTION FOR EPOLL (LINUX/UNIX/OSX)
 ```
