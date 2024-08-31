@@ -154,7 +154,6 @@ while (true) {
 
 #ifdef WIN32
 	int ret = select(0, &m_TempFds, 0, 0, &m_Timeout);
-	//CheckSocketFailure(m_Return, "", "select() error");
 	if (0 == ret) {
 		printf("select() returned timeout\n");
 		return;
@@ -178,7 +177,6 @@ while (true) {
 #endif
 }
 ```
-
 select() will return 0 if timeout, -1 if error and 1 if successful
 when successful, readable sockets will be returned.
 if the readable sockets include the server, it means a new connection has been found which you then call accept() to accept the connection.
@@ -186,15 +184,13 @@ any other readable sockets returned is the message sent by the client sockets co
 
 For Berkeley sockets, I've only tested this on my M2 mac. But this is what I have.
 ```c++ {linenos=true}
-
-	TEMP_RETURN_VARIABLE = select(m_MaxFD + 1, &m_TempFds, NULL, NULL, &m_Timeout);
-
-	//CheckSocketFailure(m_Return, "", "select() error");
-	if (0 == TEMP_RETURN_VARIABLE) {
+while(true){
+	int ret = select(m_MaxFD + 1, &m_TempFds, NULL, NULL, &m_Timeout);
+	if (0 == ret) {
 		printf("select() returned timeout\n");
 		return;
 	}
-	else if (0 > TEMP_RETURN_VARIABLE) {
+	else if (0 > ret) {
 		printf("select() returned error\n");
 		m_IsListening = false;
 		return;
@@ -213,7 +209,7 @@ For Berkeley sockets, I've only tested this on my M2 mac. But this is what I hav
 	for (auto it : readable) {
 		ReadFromConnection(it);
 	}
-#endif
+}
 ```
 For Berkeley scokets, you have to do the following:
 - Keep track of the total number of file descriptors (sockets)
