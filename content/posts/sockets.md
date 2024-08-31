@@ -4,13 +4,13 @@ summary: "C++ Sockets Notes"
 date: 2024-08-25
 tags: ["c++", "sockets", "networking"]
 author: ["JC"]
-draft: true
+draft: false
 weight: 0
 ShowToc: true
 ---
 
 ### Introduction
-This is my notes for c++ sockets. 
+This is my notes for c++ sockets. There will be differences when using sockets in windows and linux/unix/OSX. This is due to the different socket types where windows uses [POSIX sockets](https://en.wikipedia.org/wiki/Berkeley_sockets#BSD_and_POSIX_sockets) and unix/OSX uses [Berkeley sockets](https://en.wikipedia.org/wiki/Berkeley_sockets)
 
 ### Libs required for sockets
 For windows you will require the winsock from windows (ws2_32.lib)
@@ -129,11 +129,98 @@ int ret = recv(m_Sock, buf, MAX_BUF_SIZE, 0);
 5. I/O multiplexing
 we will be talking about select(), epoll(), fd_set and how to use them
 
-i. we will first look at select(), select() is used differently in windows and non-windows
+i. we will first look at select(), select() is used differently in POSIX sockets (windows) and Berkeley sockets (OSX/unix) and I will go through the windows one here (Berkeley sockets below)
+```c++ {linenos=true}
+/*int select(int nfds, fd_set *_Nullable restrict readfds,
+                  fd_set *_Nullable restrict writefds,
+                  fd_set *_Nullable restrict exceptfds,
+                  struct timeval *_Nullable restrict timeout);*/
+int ret = select(0, &m_TempFds, 0, 0, &m_Timeout);
+```
+Lets run through the arguments:
+int nfds -> only used for Berkeley sockets
+readfds -> set of sockets to be checked for readability
+writefds -> set of sockets to be checked for writability
+exceptfds -> set of sockets to be checked for errors
+timeout -> the maximum time for select to wait (a blocking function until timeout)
+
+select() is normally called in a loop
+```c++ {linenos=true}
+while (true) {
+	TIMEVAL m_Timeout;
+	m_Timeout.tv_sec = 1;
+	m_Timeout.tv_usec = 0;
+	m_TempFds = m_ReadFds;
+
+#ifdef WIN32
+	int ret = select(0, &m_TempFds, 0, 0, &m_Timeout);
+	//CheckSocketFailure(m_Return, "", "select() error");
+	if (0 == ret) {
+		printf("select() returned timeout\n");
+		return;
+	}
+	else if (0 > ret) {
+		printf("select() returned error\n");
+		return;
+	}
+	for (int Index = 0; Index < m_TempFds.fd_count; Index++)
+	{
+		//if (!FD_ISSET(Index, &m_TempFds)) continue;
+		if (m_TempFds.fd_array[Index] == m_Sock)
+		{ // New connection requested by new client.
+			InitNewConnection();
+		}
+		else {
+			// Something to read from socket.
+			ReadFromConnection(m_TempFds.fd_array[Index]);
+		}
+	}
+#endif
+}
+```
+
+select() will return 0 if timeout, -1 if error and 1 if successful
+when successful, readable sockets will be returned.
+if the readable sockets include the server, it means a new connection has been found which you then call accept() to accept the connection.
+any other readable sockets returned is the message sent by the client sockets connected.
+
+For Berkeley sockets, I've only tested this on my M2 mac. But this is what I have.
 ```c++ {linenos=true}
 
+	TEMP_RETURN_VARIABLE = select(m_MaxFD + 1, &m_TempFds, NULL, NULL, &m_Timeout);
 
+	//CheckSocketFailure(m_Return, "", "select() error");
+	if (0 == TEMP_RETURN_VARIABLE) {
+		printf("select() returned timeout\n");
+		return;
+	}
+	else if (0 > TEMP_RETURN_VARIABLE) {
+		printf("select() returned error\n");
+		m_IsListening = false;
+		return;
+	}
+	if (FD_ISSET(m_Sock, &m_TempFds)) {
+		//Handle new connection
+		InitNewConnection();
+	}
 
-
-//TODO: ADD DESCRIPTION FOR EPOLL (LINUX/UNIX/OSX)
+	std::vector<SOCKET> readable;
+	for (auto it : m_Users) {
+		if (FD_ISSET(it.first, &m_TempFds)) {
+			readable.push_back(it.first);
+		}
+	}
+	for (auto it : readable) {
+		ReadFromConnection(it);
+	}
+#endif
 ```
+For Berkeley scokets, you have to do the following:
+- Keep track of the total number of file descriptors (sockets)
+- Use FD_ISSET to check all connected sockets for available file descriptors
+
+
+### Additional Notes
+Why did I use FD_ISSET instead of fd_set.fd_array[]? It is because Berkeley sockets doesn't allow access to fd_array. The socket.h and winsock2.h lib have different designs for fd_set.
+
+For Berkeley sockets there is an alternative for message watching, the epoll() function. I personally haven't tried it. Maybe when I try it one day. I will update this. For now, this is all for sockets.
