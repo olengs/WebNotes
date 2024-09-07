@@ -21,4 +21,6 @@ ShowToc: true
 
 ### Vertex Array
 
+### Textures
+
 ### Continuation on shader
