@@ -50,7 +50,7 @@ imageTitle = "hello"
 
 [[params.profileMode.buttons]]
 name = "Archive"
-url = "/WebNotes/archives"
+url = "/archives"
 
 [[params.profileMode.buttons]]
 name = "tags"
