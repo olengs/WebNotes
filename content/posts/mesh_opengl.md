@@ -175,6 +175,12 @@ glDeleteVertexArrays(1, &vertexArray);
 ```
 
 ### Rendering
-I'll just give a summary of how rendering works, I will continue writing about triangles and shaders in another blog.
+For rendering, the following steps takes place:
+1. Load VBO and IBO
+2. Load Textures (optional)
+3. Load Shader, VAO
+4. Bind VBO, IBO, Texture, bind VAO, Shader. Call render and unbind VAO.
+
+This is just give a summary of how rendering works, I will continue writing about triangles and shaders in another blog.
 
 Any comments/feedback can be directed to my socials on the main page. Thanks for reading.
