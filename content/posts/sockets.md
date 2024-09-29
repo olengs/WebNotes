@@ -182,33 +182,31 @@ when successful, readable sockets will be returned.
 if the readable sockets include the server, it means a new connection has been found which you then call accept() to accept the connection.
 any other readable sockets returned is the message sent by the client sockets connected.
 
-For Berkeley sockets, I've only tested this on my M2 mac. But this is what I have.
+For Berkeley sockets, I've only tested this on my M2 mac. But this is what I have. Note that for some reason, when I use select() in a while loop on my M2 Mac, the function gets stuck, and only fixes when I call select() via another function.
 ```c++ {linenos=true}
-while(true){
-	int ret = select(m_MaxFD + 1, &m_TempFds, NULL, NULL, &m_Timeout);
-	if (0 == ret) {
-		printf("select() returned timeout\n");
-		return;
-	}
-	else if (0 > ret) {
-		printf("select() returned error\n");
-		m_IsListening = false;
-		return;
-	}
-	if (FD_ISSET(m_Sock, &m_TempFds)) {
-		//Handle new connection
-		InitNewConnection();
-	}
+int ret = select(m_MaxFD + 1, &m_TempFds, NULL, NULL, &m_Timeout);
+if (0 == ret) {
+	printf("select() returned timeout\n");
+	return;
+}
+else if (0 > ret) {
+	printf("select() returned error\n");
+	m_IsListening = false;
+	return;
+}
+if (FD_ISSET(m_Sock, &m_TempFds)) {
+	//Handle new connection
+	InitNewConnection();
+}
 
-	std::vector<SOCKET> readable;
-	for (auto it : m_Users) {
-		if (FD_ISSET(it.first, &m_TempFds)) {
-			readable.push_back(it.first);
-		}
+std::vector<SOCKET> readable;
+for (auto it : m_Users) {
+	if (FD_ISSET(it.first, &m_TempFds)) {
+		readable.push_back(it.first);
 	}
-	for (auto it : readable) {
-		ReadFromConnection(it);
-	}
+}
+for (auto it : readable) {
+	ReadFromConnection(it);
 }
 ```
 For Berkeley scokets, you have to do the following:
