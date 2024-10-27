@@ -2,7 +2,7 @@
 title: "Creating a OpenGL instance"
 summary: "My experience with creating OpenGL instance on both windows and mac OS"
 date: 2024-09-28
-tags: ["c++", "OpenGL", "Graphics", "GLAD", "GLFW"]
+tags: ["C++", "OpenGL", "Graphics", "GLAD", "GLFW"]
 author: ["JC"]
 draft: false
 weight: 0

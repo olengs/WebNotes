@@ -2,7 +2,7 @@
 title: "Asynchronous programming using std::future"
 summary: "Notes for c++ async"
 date: 2024-07-03
-tags: ["c++", "async", "multithreading"]
+tags: ["C++", "Async", "Multithreading"]
 author: ["JC"]
 draft: false
 weight: 0
@@ -13,9 +13,9 @@ ShowToc: true
 This post will talk about std::async, std::future, std::packaged_task, std::thread and asyncronous programming as a whole
 
 In c++, There is currently 3 ways, as of writing, to create non-blocking functions.
-1. [std::promise](../async#stdpromise) (asynchronous)
-2. [std::async](../async#stdasync) (asynchronous)
-3. [std::thread](../async/#stdthread) (multi-threaded)
+1. [std::promise](#stdpromise) (asynchronous)
+2. [std::async](#stdasync) (asynchronous)
+3. [std::thread](#stdthread) (multi-threaded)
 
 So, when do we use these? It's dependent on your use-case.
 
@@ -72,9 +72,9 @@ This is where std::future comes in.
 [std::future](https://en.cppreference.com/w/cpp/thread/future) is the result, the value returned from an asynchronous process.
 
 it is commonly used with
-1. [std::packaged_task](../async#stdpackaged_task)
-2. [std::promise](../async#stdpromise)
-3. [std::async](../async#stdasync)
+1. [std::packaged_task](#stdpackaged_task)
+2. [std::promise](#stdpromise)
+3. [std::async](#stdasync)
 
 Note that the std::future has to be saved as the invoke will get destroyed when the std::future is destroyed. This can be fixed with std::shared_future.
 

@@ -2,7 +2,7 @@
 title: "C++ Sockets"
 summary: "C++ Sockets Notes"
 date: 2024-08-25
-tags: ["c++", "sockets", "networking"]
+tags: ["C++", "Sockets", "Networking"]
 author: ["JC"]
 draft: false
 weight: 0
@@ -10,7 +10,7 @@ ShowToc: true
 ---
 
 ### Introduction
-This is my notes for c++ sockets. There will be differences when using sockets in windows and linux/unix/OSX. This is due to the different socket types where windows uses [POSIX sockets](https://en.wikipedia.org/wiki/Berkeley_sockets#BSD_and_POSIX_sockets) and unix/OSX uses [Berkeley sockets](https://en.wikipedia.org/wiki/Berkeley_sockets)
+This is my notes for c++ sockets. There will be differences when using sockets in windows and linux/unix/OSX. This is due to the different socket types where windows uses [WinSock sockets](https://en.wikipedia.org/wiki/Winsock) and unix/OSX uses [Berkeley sockets](https://en.wikipedia.org/wiki/Berkeley_sockets)
 
 ### Libs required for sockets
 For windows you will require the winsock from windows (ws2_32.lib)
@@ -129,7 +129,7 @@ int ret = recv(m_Sock, buf, MAX_BUF_SIZE, 0);
 5. I/O multiplexing
 we will be talking about select(), epoll(), fd_set and how to use them
 
-i. we will first look at select(), select() is used differently in POSIX sockets (windows) and Berkeley sockets (OSX/unix) and I will go through the windows one here (Berkeley sockets below)
+i. we will first look at select(), select() is used differently in WinSock (windows) and Berkeley sockets (OSX/unix) and I will go through the windows one here (Berkeley sockets below)
 ```c++ {linenos=true}
 /*int select(int nfds, fd_set *_Nullable restrict readfds,
                   fd_set *_Nullable restrict writefds,
