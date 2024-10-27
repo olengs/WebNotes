@@ -2,7 +2,7 @@
 title: "CMake"
 summary: "Learnings from using cmake"
 date: 2024-06-19
-tags: ["c++", "third-party", "cmake", "compile"]
+tags: ["C++", "Third-Party", "CMake", "Compile"]
 author: ["JC"]
 draft: false
 weight: 0
@@ -57,10 +57,10 @@ cmake --build . --config Release
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
-![](../images/cmake/msvc_cmake_install.jpg)
+![](../../images/cmake/msvc_cmake_install.jpg)
 
 The tool allows you to adjust configuration and build without caching via the UI.
-![](../images/cmake/msvc_cmake_config.jpg)
+![](../../images/cmake/msvc_cmake_config.jpg)
 
 
 ### Cmakelists.txt Code

@@ -2,7 +2,7 @@
 title: "Async continuation for c++"
 summary: "My take on continuation for c++"
 date: 2024-07-13
-tags: ["c++", "async", "multithreading"]
+tags: ["C++", "Async", "Multithreading"]
 author: ["JC"]
 draft: false
 weight: 0
