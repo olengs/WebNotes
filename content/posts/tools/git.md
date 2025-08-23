@@ -87,6 +87,25 @@ git branch -a
 # Create a new branch
 git branch <branch_name>
 
-# 
+```
+
+### Merging
+Note that if there is a conflict, manually resolve the conflict, then call git add and git commit to save the resolved conflict.
+```
+#Merges branch to current branch
+git merge <branch name>
+```
+
+### Cherry picking
+Cherry picking just copies all changes from a commit into another branch.
+```
+# find the commit sha256 id
+git log
+
+# go to the branch to paste the changes to
+git checkout <branch_name>
+
+#pastes the changes to the current branch
+git cherry-pick <sha256id>
 
 ```
