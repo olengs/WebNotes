@@ -11,7 +11,7 @@ ShowToc: true
 
 ### Summary
 
-My learning for git and github CLI.
+My learning for git and github CLI. Only have some commonly used commands
 
 ### Git Core Commands
 ```
@@ -53,7 +53,7 @@ git pull
 These functions are to log and see it in a graph
 
 ```
-# filters and find out when a file is removed
+# filters and logs out when a file is removed
 # D => deleted
 git log --diff-filter=D -- <filename>
 ```
