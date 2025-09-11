@@ -30,30 +30,26 @@ To use cmake, create a CMakelists.txt into your project folder.
 
 Cmake is a command line tool. The following commands are used to build the project.
 
+Commands
 ```cmake
-#to cache build
+# to set up the project
 cmake .
 
-#to build current folder (after baking)
-#debug mode
+# command to build current folder (after set up)
 cmake --build . --config Debug
 
-#release mode
+# alternatively, release mode
 cmake --build . --config Release
+```
 
+To move the cache to a separate directory so as to not clutter your files
+```cmake
 #move the build to another folder(build), then delete the folder
 1. mkdir build
 2. cd build
 3. cmake ../
 #build the project
-4. cmake --build . --config Release
-#build the project if --config doesn't work
-# 4. cmake build . -D CMAKE_BUILD_TYPE=Debug
-#compiles the project
-5. make
-#removing the build folder after completion
-6. cd ../
-7. rmdir build
+4. cmake --build . --config Debug
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
