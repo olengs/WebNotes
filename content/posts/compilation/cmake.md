@@ -46,9 +46,9 @@ cmake --build . --config Release
 2. cd build
 3. cmake ../
 #build the project
-4. cmake build . --config Release
+4. cmake --build . --config Release
 #build the project if --config doesn't work
-4. cmake build . -D CMAKE_BUILD_TYPE=Debug
+# 4. cmake build . -D CMAKE_BUILD_TYPE=Debug
 #compiles the project
 5. make
 #removing the build folder after completion
