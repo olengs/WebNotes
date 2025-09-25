@@ -1,3 +1,14 @@
+---
+title: "Serving postgres with docker comapose file"
+summary: "Using docker commands to serve postgres database"
+date: 2025-01-28
+tags: ["Postgres", "PSQL", "Docker", "Database"]
+author: ["JC"]
+draft: true
+weight: 0
+ShowToc: true
+---
+
 postgres (with docker)
 
 docker version
@@ -52,6 +63,3 @@ docker compose exec -it db psql -U baloo -d lenslocked
 # To run sql (note: db => service name, can also be replace by NAME of container, -d is database, where args is lenslocked => accessing lenslocked db (under POSTGRES_DB))
 docker compose exec -it lenslocked-db-1 psql -U baloo -d lenslocked
 # same as above, just using image name, in case you have multiple same name
-
-
-
