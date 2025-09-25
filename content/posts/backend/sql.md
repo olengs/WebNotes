@@ -1,3 +1,14 @@
+---
+title: "Intro to SQL"
+summary: "Introduction to SQL"
+date: 2025-01-28
+tags: ["SQL", "PSQL", "Database"]
+author: ["JC"]
+draft: true
+weight: 0
+ShowToc: true
+---
+
 CREATE TABLE <name> (
     field_name TYPE CONSTRAINTS,
     next_field_name TYPE(args) CONSTRAINTS
