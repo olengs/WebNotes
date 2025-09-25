@@ -1,5 +1,5 @@
 ---
-title: "Serving postgres with docker"
+title: "Serving postgres with docker comapose file"
 summary: "Using docker commands to serve postgres database"
 date: 2025-01-28
 tags: ["Postgres", "PSQL", "Docker", "Database"]

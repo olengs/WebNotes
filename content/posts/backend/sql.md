@@ -1,10 +1,10 @@
 ---
-title: "Intro to SQL"
-summary: "Introduction to SQL"
+title: "Intro to PSQL"
+summary: "Introduction to PSQL"
 date: 2025-01-28
 tags: ["SQL", "PSQL", "Database"]
 author: ["JC"]
-draft: true
+draft: false
 weight: 0
 ShowToc: true
 ---
