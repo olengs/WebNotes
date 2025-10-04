@@ -54,7 +54,7 @@ url = "archives"
 
 [[params.profileMode.buttons]]
 name = "tags"
-pageRef = "tags"
+url = "tags"
 
 [[params.socialIcons]]
 name = "github"
