@@ -50,11 +50,11 @@ imageTitle = "hello"
 
 [[params.profileMode.buttons]]
 name = "Archive"
-url = "/archives"
+url = "archives"
 
 [[params.profileMode.buttons]]
 name = "tags"
-url = "/tags"
+url = "tags"
 
 [[params.socialIcons]]
 name = "github"
@@ -67,9 +67,6 @@ url = "https://www.linkedin.com/in/lim-jun-chen-2bb508213"
 [[params.socialIcons]]
 name = "discord"
 url = "https://discord.com/channels/@me/272596660771618817"
-
-
-
 
 
 #########################Seach Config##############################
