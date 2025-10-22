@@ -4,7 +4,7 @@ summary: "Introduction to PSQL"
 date: 2025-01-28
 tags: ["SQL", "PSQL", "Database"]
 author: ["JC"]
-draft: false
+draft: true
 weight: 0
 ShowToc: true
 ---
