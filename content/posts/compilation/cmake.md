@@ -40,16 +40,20 @@ cmake --build . --config Debug
 
 # alternatively, release mode
 cmake --build . --config Release
+
+# to install in specific locations
+cmake --install . --prefix <path to install location folder>
 ```
 
 To move the cache to a separate directory so as to not clutter your files
 ```cmake
 #move the build to another folder(build), then delete the folder
 1. mkdir build
-2. cd build
+2. pushd build
 3. cmake ../
 #build the project
 4. cmake --build . --config Debug
+5. popd
 ```
 
 There is also a MSVC tool for cmake that is to be downloaded via the MSVC installer
